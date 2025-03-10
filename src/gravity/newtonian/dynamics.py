@@ -32,14 +32,14 @@ class Dynamics(BaseModel):
     cloud: CloudState
     timestep_dur_days: float
 
+    # used to store the cumulative history
+    star_history: list = []
+    cloud_history: list = []
+
     @property
     def duration_seconds(self):
         """Duration of a single timestep in SI units (seconds)."""
         return self.timestep_dur_days * 24 * 60 * 60
-
-    # used to store the cumulative history
-    star_history: list = []
-    cloud_history: list = []
 
     def gravitational_force(
         self,
@@ -197,10 +197,10 @@ class Dynamics(BaseModel):
         half_ref_update = ref_state.model_copy()
 
         # update velocity using v_half = u + a(t/2)
-        half_update_ref_velocity = ref_state.velocity + (init_acceleration * (self.dur_seconds / 2))
+        half_update_ref_velocity = ref_state.velocity + (init_acceleration * (self.duration_seconds / 2))
 
         # update position using d = d0 + v_half * t
-        updated_position = ref_state.position + (half_update_ref_velocity * self.dur_seconds)
+        updated_position = ref_state.position + (half_update_ref_velocity * self.duration_seconds)
 
         # update the acceleration
         half_ref_update.velocity = half_update_ref_velocity
@@ -215,7 +215,7 @@ class Dynamics(BaseModel):
             return TypeError(msg)
 
         # update velocity again using v_full = v_half + a (t/2)
-        updated_cloud_velocity = half_update_ref_velocity + (half_update_acceleration * (self.dur_seconds / 2))
+        updated_cloud_velocity = half_update_ref_velocity + (half_update_acceleration * (self.duration_seconds / 2))
 
         # use named tuple for unambiguous extraction
         output = kinematics(updated_position, updated_cloud_velocity)
