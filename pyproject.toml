@@ -1,0 +1,23 @@
+[project]
+name = "physics-sims"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Erick HM",email = "erickhindsmingo@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy (>=2.0.0,<3.0.0)",
+    "pydantic (>=2.10.6,<3.0.0)",
+    "matplotlib (>=3.10.1,<4.0.0)",
+    "numba (>=0.61.0,<0.62.0)"
+]
+
+[tool.poetry]
+packages = [{include = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
