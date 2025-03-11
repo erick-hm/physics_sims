@@ -64,14 +64,6 @@ class State(ABC, BaseModel):
 class StarState(State):
     """A state for stars."""
 
-    def __init__(self):
-        """Inherit from State abstract class."""
-        super().__init__()
-
 
 class CloudState(State):
     """A state for non-star entities, such as planets or particles."""
-
-    def __init__(self):
-        """Inherit from State abstract class."""
-        super().__init__()

@@ -20,7 +20,8 @@ dependencies = [
 
 [tool.poetry]
 packages = [
-    {include = "src"}
+    {include = "src"},
+    {include = "gravity", from="src"}
 ]
 
 [tool.ruff]
