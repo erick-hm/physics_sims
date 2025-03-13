@@ -41,6 +41,8 @@ class Dynamics(BaseModel):
         """Duration of a single timestep in SI units (seconds)."""
         return self.timestep_dur_days * 24 * 60 * 60
 
+    # TODO: Make callable function instead of class method
+    # TODO: split out distance calculation as a utility function
     def gravitational_force(
         self,
         star_mass: np.ndarray,
@@ -79,7 +81,7 @@ class Dynamics(BaseModel):
         relative_positions = entity_pos - star_pos
 
         # add small correction to prevent zero division in denominator
-        epsilon = eps * PhysicalConstants.AU
+        epsilon = eps * PhysicalConstants.AU.value
         relative_distances_sq = np.sum((relative_positions**2), axis=1).reshape(-1, 1) + epsilon
         normalization = relative_distances_sq**0.5
 
@@ -88,7 +90,7 @@ class Dynamics(BaseModel):
 
         # calculate and update the total force
         force = -(
-            (PhysicalConstants.G * star_mass * entity_mass.reshape(-1, 1) * normed_relative_positions)
+            (PhysicalConstants.G.value * star_mass * entity_mass.reshape(-1, 1) * normed_relative_positions)
             / relative_distances_sq.reshape(-1, 1)
         )
 
@@ -207,9 +209,9 @@ class Dynamics(BaseModel):
         half_ref_update.position = updated_position
 
         if isinstance(ref_state, CloudState):
-            half_update_acceleration = self.calculate_cloud_forces(star_state, half_ref_update) / half_ref_update.mass
+            half_update_acceleration = self.calculate_cloud_forces(star_state, half_ref_update) / half_ref_update.mass.reshape(-1,1)
         elif isinstance(ref_state, StarState):
-            half_update_acceleration = self.calculate_stellar_forces(half_ref_update) / half_ref_update.mass
+            half_update_acceleration = self.calculate_stellar_forces(half_ref_update) / half_ref_update.mass.reshape(-1,1)
         else:
             msg = "Cloud points should be of type CloudState or StarState"
             return TypeError(msg)
