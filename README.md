@@ -7,4 +7,4 @@ A work-in-progress simulation to visualise the effect of the gravity of a star(s
 
 Below is an example animation created with the visualiser class `gravity.visualisation.Plotter` for a set of 6 test masses.
 
-<img src="https://github.com/erick-hm/physics_sims/blob/main/visuals/gravity_example.gif" width="300" height="300" />
+<img src="https://github.com/erick-hm/physics_sims/blob/main/visuals/gravity_example.gif" width="600" height="600" />
