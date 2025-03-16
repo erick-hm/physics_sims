@@ -154,12 +154,11 @@ class Dynamics(BaseModel):
         for ref_idx in range(num_stars):
             for measured_idx in range(num_stars):
                 if ref_idx != measured_idx:
-                    # add the cumulative force on each star from every other star
-                    stellar_forces[measured_idx] += self.gravitational_force(
-                        grav_mass=new_stars.mass[ref_idx],
-                        grav_pos=new_stars.position[ref_idx],
-                        ref_mass=new_stars.mass[measured_idx],
-                        ref_pos=new_stars.position[measured_idx],
+                    stellar_forces[measured_idx] = self.gravitational_force(
+                        star_mass=new_stars[ref_idx].mass,
+                        star_pos=new_stars[ref_idx].position,
+                        entity_mass=new_stars[measured_idx].mass,
+                        entity_pos=new_stars[measured_idx].position,
                     )
 
         return stellar_forces
@@ -209,9 +208,13 @@ class Dynamics(BaseModel):
         half_ref_update.position = updated_position
 
         if isinstance(ref_state, CloudState):
-            half_update_acceleration = self.calculate_cloud_forces(star_state, half_ref_update) / half_ref_update.mass.reshape(-1,1)
+            half_update_acceleration = self.calculate_cloud_forces(
+                star_state, half_ref_update
+            ) / half_ref_update.mass.reshape(-1, 1)
         elif isinstance(ref_state, StarState):
-            half_update_acceleration = self.calculate_stellar_forces(half_ref_update) / half_ref_update.mass.reshape(-1,1)
+            half_update_acceleration = self.calculate_stellar_forces(half_ref_update) / half_ref_update.mass.reshape(
+                -1, 1
+            )
         else:
             msg = "Cloud points should be of type CloudState or StarState"
             return TypeError(msg)
